@@ -1,43 +1,26 @@
 name: CI/CD Pipeline
 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-inputs:
-  PROJECT_NAME:
-    description: 'Project name'
-    required: true
-  BUSINESS_GROUP:
-    description: 'Project business group'
-    required: true
-    default: 'ugii-corp'
-    options:
-      - 'ugii-corp'
-      - 'ugii-central'
-      - 'ugii-east'
-      - 'ugii-north'
-      - 'ugii-west'
+  workflow_call:
+    inputs:
+      PROJECT_NAME:
+        description: 'Project name'
+        required: true
+        type: string
+      BUSINESS_GROUP:
+        description: 'Project business group'
+        default: 'ugii-corp'
+        required: true
+        type: string
 
 jobs:
-  build:
+  print-username:
     runs-on: ubuntu-latest
 
     steps:
-      with:
-        PROJECT_NAME: ${{inputs.PROJECT_NAME}}
-        BUSINESS_GROUP: ${{inputs.BUSINESS_GROUP}}
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run project
         run: python main.py --project_name ${{inputs.PROJECT_NAME}} --business_group ${{inputs.BUSINESS_GROUP}}
+            
